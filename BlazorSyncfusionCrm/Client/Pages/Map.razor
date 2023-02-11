@@ -1,0 +1,34 @@
+﻿@page "/map"
+@inject HttpClient Http
+
+<h3>Map</h3>
+
+<SfMaps>
+    <MapsLayers>
+        <MapsLayer UrlTemplate="https://tile.openstreetmap.org/level/tileX/tileY.png" TValue="string">
+            <MapsMarkerSettings>
+                <MapsMarker Visible="true"
+                            Shape="Syncfusion.Blazor.Maps.MarkerType.Circle"
+                            DataSource="Contacts" Height="25" Width="15" TValue="Contact">
+                    <MapsMarkerTooltipSettings Visible="true" ValuePath="Place"></MapsMarkerTooltipSettings>
+                </MapsMarker>
+            </MapsMarkerSettings>
+        </MapsLayer>
+    </MapsLayers>
+    <MapsZoomSettings Enable="true"
+                      HorizontalAlignment="Syncfusion.Blazor.Maps.Alignment.Near"
+                      ShouldZoomInitially="true"></MapsZoomSettings>
+</SfMaps>
+
+@code {
+    public List<Contact> Contacts { get; set; } = new List<Contact>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await Http.GetFromJsonAsync<List<Contact>>("api/contacts/map");
+        if (result is not null)
+        {
+            Contacts = result;
+        }
+    }
+}
